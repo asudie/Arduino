@@ -1,7 +1,17 @@
+#define MOD 3
+
 int ledOne = 13;
 int ledTwo = 12;
 int ledThree = 8;
 int buttonPin = 2;
+
+unsigned long lastRedBlinkTime = 0;
+unsigned long redBlinkInterval = 500;
+bool isRedOn = false;
+
+unsigned long lastYellowBlinkTime = 0;
+unsigned long yellowBlinkInterval = 2000;
+bool isYellowOn = false;
 
 bool ledMode = false;             
 bool lastButtonState = HIGH;      
@@ -13,8 +23,6 @@ unsigned long debounceDelay = 50;
 unsigned long lastBlinkTime = 0;
 unsigned long blinkInterval = 1000;  // 1 second
 bool isBlinkOn = false;
-
-#define MOD 2
 
 void setup()
 {
@@ -78,5 +86,22 @@ void loop()
 
     digitalWrite(ledOne, isBlinkOn ? HIGH : LOW);
     digitalWrite(ledTwo, isBlinkOn ? LOW : HIGH);
+  } else if(MOD == 3)
+  {
+    digitalWrite(ledThree, LOW);
+
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - lastRedBlinkTime >= redBlinkInterval) {
+      lastRedBlinkTime = currentMillis;
+      isRedOn = !isRedOn;
+      digitalWrite(ledOne, isRedOn ? HIGH : LOW);
+    }
+
+    if (currentMillis - lastYellowBlinkTime >= yellowBlinkInterval) {
+      lastYellowBlinkTime = currentMillis;
+      isYellowOn = !isYellowOn;
+      digitalWrite(ledTwo, isYellowOn ? HIGH : LOW);
+    }
   }
 }
