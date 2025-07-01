@@ -71,26 +71,21 @@ void handleToggle() {
 }
 
 void handleAnimate() {
-  // Define a few frames of the dancing man
   const uint64_t frames[] = {
-    // Frame 1: Arms up
     0b0001100000011000000000000001100000011000000000000001100000011000,
-    // Frame 2: Arms out
     0b0010010000100100000000000001100000011000000000000001100000011000,
-    // Frame 3: One leg up
     0b0010010000100100000000000001100000011000000010000001000000010000,
-    // Frame 4: Other leg up
     0b0010010000100100000000000001100000011000000001000000010000010000
   };
 
   const int frameCount = sizeof(frames) / sizeof(frames[0]);
 
-  for (int repeat = 0; repeat < 3; repeat++) {  // Repeat the animation 3 times
+  for (int repeat = 0; repeat < 3; repeat++) {
     for (int f = 0; f < frameCount; f++) {
       uint64_t frame = frames[f];
       for (int i = 0; i < NUMPIXELS; i++) {
         bool isOn = (frame >> (63 - i)) & 1;
-        strip.setPixelColor(i, isOn ? strip.Color(255, 100, 0) : 0);  // Orange color
+        strip.setPixelColor(i, isOn ? strip.Color(255, 100, 0) : 0);
       }
       strip.show();
       delay(300);
@@ -100,9 +95,11 @@ void handleAnimate() {
   // Turn off all LEDs after animation
   for (int i = 0; i < NUMPIXELS; i++) {
     strip.setPixelColor(i, 0);
+    ledStates[i] = false;  // <-- this resets the toggle state
   }
   strip.show();
 
   server.sendHeader("Location", "/");
   server.send(303);
 }
+
